@@ -6,7 +6,6 @@ import Cursos from './paginas/Cursos';
 import DetalhesCurso from './paginas/DetalhesCurso';
 import ConteudoCurso from './paginas/ConteudoCurso';
 import CriarProposta from './paginas/CriarProposta';
-import CriarConteudo from './paginas/CriarConteudo';
 import Notificacoes from './paginas/Notificacoes';
 import MeusCursos from './paginas/MeusCursos';
 import MeuPerfil from './paginas/MeuPerfil';
@@ -25,7 +24,6 @@ const AppRoutes: React.FC = () => {
         <Route path="/conteudo-curso/:id" element={<ConteudoCurso />} />
         <Route path="/criar-proposta" element={<CriarProposta />} />
         <Route path="/curso/:id/configuracoes" element={<ConfiguracoesCurso />} />
-        <Route path="/criar-conteudo/:id" element={<CriarConteudo />} />
         <Route path="/notificacoes" element={<Notificacoes />} />
         <Route path="/meus-cursos" element={<MeusCursos />} />
         <Route path="/meu-perfil" element={<MeuPerfil />} />
