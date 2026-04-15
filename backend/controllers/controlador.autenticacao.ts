@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import {
   verifyGoogleToken,
   generateJwt,
-} from '../services/servico.autenticacao';
+} from '../services/servico.autenticacao.js';
 
 /**
  * Lida com o processo de login do Google.

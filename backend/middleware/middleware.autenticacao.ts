@@ -1,7 +1,7 @@
 
 import { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
-import { appConfig } from '../config';
+import { appConfig } from '../config.js';
 
 // Estende a interface Request do Express para incluir a propriedade 'user'
 interface AuthenticatedRequest extends Request {

@@ -1,9 +1,6 @@
-
 import { Router } from 'express';
-import { googleLoginHandler } from '../controllers/controlador.autenticacao.js';
-
+import { googleLoginHandler } from '../controllers/controlador.autenticacao';
 const router = Router();
-
 /**
  * @swagger
  * /auth/google:
@@ -41,5 +38,4 @@ const router = Router();
  *         description: Erro interno do servidor.
  */
 router.post('/google', googleLoginHandler);
-
 export default router;

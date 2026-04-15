@@ -2,8 +2,8 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import authRoutes from './routes/rotas.autenticacao'; // Importa as rotas de autenticação
-import { authMiddleware } from './middleware/middleware.autenticacao'; // Importa o middleware de autenticação
+import authRoutes from './routes/rotas.autenticacao.js'; // Importa as rotas de autenticação
+import { authMiddleware } from './middleware/middleware.autenticacao.js'; // Importa o middleware de autenticação
 
 const app = express();
 
