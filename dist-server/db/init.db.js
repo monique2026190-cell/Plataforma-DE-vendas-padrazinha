@@ -1,7 +1,10 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import pool from './pool.js';
 import { logger } from '../logs/logger.js';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const initDB = async () => {
     try {
         // Lê o arquivo SQL que define a estrutura do banco de dados
