@@ -1,13 +1,12 @@
-
 import pool from '../db/pool.js';
 import { logger } from '../logs/logger.js';
 import { findUserByGoogleIdQuery, createUserQuery } from '../db/queries/usuario.queries.js';
 
 interface GoogleUser {
-  sub: string;       // Google ID
+  sub: string;
   name: string;
   email: string;
-  picture?: string; // Foto de perfil (opcional)
+  picture?: string;
 }
 
 interface AppUser {
@@ -16,6 +15,7 @@ interface AppUser {
   nome: string;
   email: string;
   foto_perfil?: string;
+  perfil_completo: boolean; 
 }
 
 /**

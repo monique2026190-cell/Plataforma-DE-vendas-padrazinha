@@ -1,11 +1,10 @@
-
 import { Request, Response } from 'express';
 import { logger } from '../logs/logger.js';
 import {
   verifyGoogleToken,
   generateJwt,
 } from '../services/servico.autenticacao.js';
-import { findOrCreateUser } from '../repository/repositorio.usuario.js'; // 1. Importa o repositório
+import { findOrCreateUser } from '../repository/repositorio.usuario.js';
 
 export const googleLoginHandler = async (req: Request, res: Response) => {
   const { credential } = req.body;
@@ -16,7 +15,6 @@ export const googleLoginHandler = async (req: Request, res: Response) => {
   }
 
   try {
-    // Etapa 1: Verificar o token do Google
     const googleUser: any = await verifyGoogleToken(credential);
     if (!googleUser) {
       logger.warn({ credential }, 'auth.google.invalid_token');
@@ -24,7 +22,6 @@ export const googleLoginHandler = async (req: Request, res: Response) => {
     }
     logger.info({ email: googleUser.email }, 'auth.google.token_verified');
 
-    // Etapa 2: Encontrar ou criar o usuário no banco de dados
     const appUser = await findOrCreateUser({
         sub: googleUser.providerId, 
         name: googleUser.name,
@@ -32,12 +29,21 @@ export const googleLoginHandler = async (req: Request, res: Response) => {
         picture: googleUser.picture
     });
 
-    // Etapa 3: Gerar o token JWT para a nossa aplicação
-    // Usamos os dados do `appUser` (do nosso DB) para gerar o token.
     const token = generateJwt(appUser);
     logger.info({ email: appUser.email, userId: appUser.id }, 'auth.jwt.generated');
 
-    res.status(200).json({ token });
+    const userForFrontend = {
+      id: appUser.id,
+      email: appUser.email,
+      name: appUser.nome,
+      picture: appUser.foto_perfil
+    };
+
+    res.status(200).json({
+      token,
+      perfilCompleto: appUser.perfil_completo,
+      user: userForFrontend,
+    });
 
   } catch (error: any) {
     logger.error(
