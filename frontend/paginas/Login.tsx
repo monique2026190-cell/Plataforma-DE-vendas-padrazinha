@@ -1,168 +1,72 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { 
-  Container, 
-  Box, 
-  TextField, 
-  Button, 
-  Typography, 
-  Avatar,
-  Link as MuiLink,
-  CssBaseline,
-  Divider
-} from '@mui/material';
-import GoogleIcon from '@mui/icons-material/Google';
+
+import React from 'react';
+import { GoogleLogin } from '@react-oauth/google';
+import { Container, Typography, Box, Paper, CssBaseline, GlobalStyles } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Logo from '../componentes/logo';
+import { useAuth } from '../contexto/contexto.autenticacao';
+import { env } from '../config/env'; // Importa a configuração de ambiente
 
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
-    primary: {
-      main: '#90CAF9',
-    },
     background: {
       default: '#121212',
       paper: '#1E1E1E',
     },
-    text: {
-      primary: '#E0E0E0',
-      secondary: '#BDBDBD',
-    }
+    primary: {
+      main: '#90CAF9',
+    },
   },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    h5: {
-      fontWeight: 700,
-    },
-    button: {
-      textTransform: 'none',
-      fontWeight: 600,
-      fontSize: '1rem',
-    }
-  },
-  components: {
-    MuiButton: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
-          padding: '10px 20px',
-        }
-      }
-    },
-    MuiOutlinedInput: {
-      styleOverrides: {
-        root: {
-          borderRadius: 8,
-        },
-      },
-    },
-  }
 });
 
 const Login: React.FC = () => {
-  const [nome, setNome] = useState('');
-  const [senha, setSenha] = useState('');
-  const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (nome.trim() && senha.trim()) {
-      navigate('/completar-perfil');
+  // Verifica se a configuração do Google Client ID está presente e não é um placeholder.
+  const isGoogleAuthConfigured = env.googleClientId && !env.googleClientId.includes('SEU_GOOGLE_CLIENT_ID');
+
+  const handleSuccess = (credentialResponse: any) => {
+    // O token retornado pelo Google é o credentialResponse.credential
+    if (credentialResponse.credential) {
+      login(credentialResponse.credential);
     }
   };
 
-  const handleGoogleLogin = () => {
-    // Lógica de login com Google (a ser implementada)
-    console.log("Login com Google clicado");
-    // Exemplo: navigate('/completar-perfil');
+  const handleError = () => {
+    console.error('Login com Google falhou');
   };
 
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <Box 
-        sx={{ 
-          display: 'flex', 
-          flexDirection: 'column', 
-          justifyContent: 'center', 
-          alignItems: 'center',
-          minHeight: '100vh',
-          px: 2,
-        }}
-      >
-        <Container component="main" maxWidth="xs">
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              p: 4,
-              bgcolor: 'background.paper',
-              borderRadius: 3,
-              boxShadow: '0px 10px 30px rgba(0, 0, 0, 0.5)'
-            }}
-          >
-            <Avatar sx={{ m: 1, bgcolor: 'primary.main', width: 48, height: 48 }}>
-              <Logo />
-            </Avatar>
-            <Typography component="h1" variant="h5" sx={{ mb: 3, color: 'text.primary' }}>
-              Bem-vindo de volta!
-            </Typography>
-            <Box component="form" onSubmit={handleLogin} sx={{ mt: 1, width: '100%' }}>
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                id="nome"
-                label="Nome de Usuário"
-                name="nome"
-                autoComplete="username"
-                autoFocus
-                variant="outlined"
-                value={nome}
-                onChange={(e) => setNome(e.target.value)}
+      <GlobalStyles styles={{ body: { backgroundColor: "#121212", height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' } }} />
+      <Container component="main" maxWidth="xs">
+        <Paper elevation={6} sx={{ padding: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <Typography component="h1" variant="h5" sx={{ mb: 3 }}>
+            Login
+          </Typography>
+          <Box>
+            {isGoogleAuthConfigured ? (
+              <GoogleLogin
+                onSuccess={handleSuccess}
+                onError={handleError}
+                theme="filled_black"
+                text="signin_with"
+                shape="rectangular"
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="senha"
-                label="Senha"
-                type="password"
-                id="senha"
-                autoComplete="current-password"
-                variant="outlined"
-                value={senha}
-                onChange={(e) => setSenha(e.target.value)}
-              />
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                sx={{ mt: 3, mb: 2, py: 1.5 }}
-              >
-                Entrar
-              </Button>
-              <Box sx={{ textAlign: 'center', mt: 2, mb: 2 }}>
-                <MuiLink href="#" variant="body2" sx={{ color: 'primary.main' }}>
-                  Esqueceu a senha?
-                </MuiLink>
+            ) : (
+              <Box sx={{ textAlign: 'center', p: 2, border: '1px dashed grey', borderRadius: 1 }}>
+                <Typography variant="body2" color="textSecondary">
+                  A autenticação do Google não está configurada.
+                </Typography>
+                <Typography variant="caption" color="textSecondary">
+                  Para habilitar o login, defina <code>VITE_GOOGLE_CLIENT_ID</code> no seu arquivo <code>.env</code>.
+                </Typography>
               </Box>
-              <Divider sx={{ my: 2 }}>OU</Divider>
-              <Button
-                fullWidth
-                variant="outlined"
-                startIcon={<GoogleIcon />}
-                onClick={handleGoogleLogin}
-                sx={{ py: 1.5 }}
-              >
-                Entrar com Google
-              </Button>
-            </Box>
+            )}
           </Box>
-        </Container>
-      </Box>
+        </Paper>
+      </Container>
     </ThemeProvider>
   );
 };
