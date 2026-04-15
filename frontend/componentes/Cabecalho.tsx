@@ -1,14 +1,21 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, Box } from '@mui/material';
+import { AppBar, Toolbar, Box } from '@mui/material';
+import Logo from './logo';
 
 const Cabecalho: React.FC = () => {
   return (
-    <AppBar position="fixed" sx={{ backgroundColor: '#1E1E1E' }}>
+    <AppBar 
+      position="fixed" 
+      sx={{
+        backgroundColor: 'rgba(30, 30, 30, 0.7)',
+        backdropFilter: 'blur(10px)',
+        boxShadow: 'none',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.12)'
+      }}
+    >
       <Toolbar>
         <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
-          <Typography variant="h6" component="div">
-            Multi-Curso
-          </Typography>
+          <Logo />
         </Box>
       </Toolbar>
     </AppBar>

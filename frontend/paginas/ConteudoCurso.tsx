@@ -7,9 +7,13 @@ import {
   AccordionDetails, 
   Box, 
   CssBaseline, 
-  GlobalStyles 
+  GlobalStyles, 
+  List, 
+  ListItem, 
+  ListItemText 
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import FolderIcon from '@mui/icons-material/Folder';
 import { useParams } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import BotaoConfiguracoesCurso from '../componentes/BotaoConfiguracoesCurso';
@@ -30,9 +34,23 @@ const darkTheme = createTheme({
 const ConteudoCurso: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
-  const modulos = [
-    { id: 1, titulo: 'Módulo 1: Introdução', aulas: ['Aula 1.1', 'Aula 1.2'] },
-    { id: 2, titulo: 'Módulo 2: Tópicos Avançados', aulas: ['Aula 2.1', 'Aula 2.2'] },
+  const secoes = [
+    {
+      id: 1,
+      titulo: 'Seção 1: Módulo de Boas-Vindas',
+      pastas: [
+        { id: 1, titulo: 'Introdução ao Curso', aulas: ['Aula 1: Apresentação', 'Aula 2: Navegando na plataforma'] },
+        { id: 2, titulo: 'Recursos Adicionais', aulas: ['Material de apoio', 'Links úteis'] },
+      ],
+    },
+    {
+      id: 2,
+      titulo: 'Seção 2: Desenvolvimento Front-End',
+      pastas: [
+        { id: 3, titulo: 'HTML e CSS', aulas: ['Aula 3: Estrutura HTML', 'Aula 4: Estilização com CSS'] },
+        { id: 4, titulo: 'JavaScript Básico', aulas: ['Aula 5: Variáveis e tipos de dados', 'Aula 6: Funções e eventos'] },
+      ],
+    },
   ];
 
   return (
@@ -47,16 +65,30 @@ const ConteudoCurso: React.FC = () => {
           </Typography>
           {id && <BotaoConfiguracoesCurso id={id} />}
         </Box>
-        
-        {modulos.map(modulo => (
-          <Accordion key={modulo.id} sx={{ bgcolor: 'background.paper', color: 'text.primary' }}>
+
+        {secoes.map(secao => (
+          <Accordion key={secao.id} sx={{ bgcolor: 'background.paper', color: 'text.primary', mb: 2 }}>
             <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
-              <Typography>{modulo.titulo}</Typography>
+              <Typography variant="h6">{secao.titulo}</Typography>
             </AccordionSummary>
             <AccordionDetails>
-              <ul>
-                {modulo.aulas.map(aula => <li key={aula}><Typography>{aula}</Typography></li>)}
-              </ul>
+              {secao.pastas.map(pasta => (
+                <Accordion key={pasta.id} sx={{ bgcolor: '#2C2C2C', color: 'text.primary', mb: 1 }}>
+                  <AccordionSummary expandIcon={<ExpandMoreIcon sx={{ color: 'white' }} />}>
+                    <FolderIcon sx={{ mr: 1, color: '#FFC107' }} />
+                    <Typography>{pasta.titulo}</Typography>
+                  </AccordionSummary>
+                  <AccordionDetails>
+                    <List dense>
+                      {pasta.aulas.map(aula => (
+                        <ListItem key={aula}>
+                          <ListItemText primary={aula} />
+                        </ListItem>
+                      ))}
+                    </List>
+                  </AccordionDetails>
+                </Accordion>
+              ))}
             </AccordionDetails>
           </Accordion>
         ))}
