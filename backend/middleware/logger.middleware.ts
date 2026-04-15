@@ -1,6 +1,6 @@
 
 import pinoHttp from 'pino-http';
-import { logger } from '../logs/logger';
+import { logger } from '../logs/logger.js';
 
 // Cria um middleware de log HTTP usando pino-http e o logger base
 export const httpLogger = pinoHttp({
