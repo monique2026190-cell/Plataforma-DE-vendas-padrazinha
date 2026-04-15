@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import authRoutes from './rotas.autenticacao';
-import logRoutes from './rotas.log';
-import courseRoutes from './rotas.cursos';
+import authRoutes from './rotas.autenticacao.js';
+import logRoutes from './rotas.log.js';
+import courseRoutes from './rotas.cursos.js';
 
 const router = Router();
 
