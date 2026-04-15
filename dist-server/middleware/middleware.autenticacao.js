@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { appConfig } from '../config';
+import { appConfig } from '../config.js';
 /**
  * Middleware para verificar a autenticidade de um token JWT.
  * O token deve ser fornecido no cabeçalho 'Authorization' como 'Bearer [token]'.

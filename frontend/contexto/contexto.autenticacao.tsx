@@ -5,7 +5,7 @@ import { logger } from '../logs/app.log';
 import { loginComGoogle, buscarPerfil } from '../servicos/servico.autenticacao';
 import api from '../servicos/api';
 
-// 1. Tipagem forte para o usuário
+// Tipagem forte para o usuário
 type User = {
   id: string;
   email: string;
@@ -13,7 +13,7 @@ type User = {
   picture?: string;
 };
 
-// Define a interface para o estado de autenticação
+// Interface para o estado de autenticação
 interface AuthState {
   token: string | null;
   user: User | null;
@@ -22,10 +22,8 @@ interface AuthState {
   logout: () => void;
 }
 
-// Cria o contexto de autenticação
 const AuthContext = createContext<AuthState | undefined>(undefined);
 
-// Hook customizado para usar o contexto de autenticação
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
@@ -34,35 +32,39 @@ export const useAuth = () => {
   return context;
 };
 
-// Componente Provedor
 export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [token, setToken] = useState<string | null>(localStorage.getItem('token'));
+  const [token, setToken] = useState<string | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true); // Começa true para verificar o token inicial
+  const [loading, setLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
-  // Efeito para verificar o token e buscar o usuário ao carregar o app
+  // Efeito para restaurar a sessão a partir do token no localStorage ao carregar o app
   useEffect(() => {
-    const carregarUsuario = async () => {
-      if (token) {
-        api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+    const restaurarSessao = async () => {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        logger.info('auth.session.restore.attempt', { hasToken: true });
+        api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
         try {
           const response = await buscarPerfil();
-          setUser(response.data.user);
-          logger.info('auth.session.restored', { userId: response.data.user.id });
+          const loadedUser = response.data.user;
+          setToken(storedToken);
+          setUser(loadedUser);
+          logger.info('auth.session.restore.success', { userId: loadedUser.id, email: loadedUser.email });
         } catch (error) {
-          logger.warn('auth.session.invalid_token');
-          // Se o token for inválido, limpa tudo
-          logout();
+          logger.warn('auth.session.restore.invalid_token', { error: 'Token inválido ou expirado' });
+          // Limpa o estado e o localStorage se o token for inválido
+          localStorage.removeItem('token');
+          delete api.defaults.headers.common['Authorization'];
         }
-      } 
+      }
       setLoading(false);
     };
 
-    carregarUsuario();
-  }, [token]); // Depende apenas do token
+    restaurarSessao();
+  }, []); // Executa apenas uma vez na montagem do componente
 
-  // Função para realizar o login
+  // Função de login completa e explícita
   const login = async (credential: string) => {
     setLoading(true);
     logger.info('auth.login.attempt');
@@ -70,34 +72,40 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const response = await loginComGoogle(credential);
       const { token: newToken } = response.data;
 
-      setToken(newToken);
       localStorage.setItem('token', newToken);
       api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
 
-      // O useEffect cuidará de buscar e setar o usuário
-      logger.info('auth.login.success', { hasToken: !!newToken });
+      const profileResponse = await buscarPerfil();
+      const loggedInUser = profileResponse.data.user;
+
+      // Define o estado da aplicação
+      setToken(newToken);
+      setUser(loggedInUser);
+
+      // Log enriquecido após o sucesso
+      logger.info('auth.login.success', { userId: loggedInUser.id, email: loggedInUser.email });
 
     } catch (error: any) {
-      // O erro já é logado pelo interceptor, aqui apenas limpamos o estado
-      logger.error('auth.login.error', { message: error.message });
+      logger.error('auth.login.error', { message: error.message, stack: error.stack });
+      // Garante que o estado seja limpo em caso de falha
       setToken(null);
       setUser(null);
       localStorage.removeItem('token');
       delete api.defaults.headers.common['Authorization'];
-      throw error; // Propaga para a UI poder reagir
+      throw error;
     } finally {
       setLoading(false);
     }
   };
 
-  // Função para realizar o logout
+  // Função de logout com log enriquecido
   const logout = () => {
-    logger.info('auth.logout.success', { userId: user?.id });
+    logger.info('auth.logout.success', { userId: user?.id, email: user?.email });
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
     delete api.defaults.headers.common['Authorization'];
-    navigate('/login'); // 4. Navegação via React Router
+    navigate('/login');
   };
 
   const value = {

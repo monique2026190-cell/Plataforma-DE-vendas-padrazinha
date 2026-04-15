@@ -2,28 +2,28 @@
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import routes from './routes/rotas.js'; // Importa as rotas de autenticação
-import { authMiddleware } from './middleware/middleware.autenticacao.js'; // Importa o middleware de autenticação
+import routes from './routes/rotas.js';
+import { authMiddleware } from './middleware/middleware.autenticacao.js';
+import { httpLogger } from './middleware/logger.middleware.js'; // 1. Importa o logger HTTP
+import { logger } from './logs/logger.js'; // 2. Importa o logger base
 
 const app = express();
 
 // --- Middlewares Essenciais ---
-// Adiciona o middleware para parse de JSON no corpo das requisições.
-// Deve vir antes do registro das rotas que o utilizam.
+// 3. Registra o logger HTTP. Deve ser um dos primeiros middlewares.
+app.use(httpLogger);
+
 app.use(express.json());
 
-// Correção do __dirname (ESSENCIAL)
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // --- Rotas da API ---
-// Registra as rotas de autenticação sob o prefixo /api
 app.use('/api', routes);
 
-// Exemplo de uma rota protegida
-// Esta rota só será acessível se um token JWT válido for fornecido.
 app.get('/api/profile', authMiddleware, (req: any, res) => {
-  // Graças ao middleware, temos acesso a req.user com os dados do usuário
+  // Exemplo de log avançado dentro de uma rota, injetado pelo pino-http
+  req.log.info({ user: req.user }, 'Acessando rota de perfil protegida');
   res.json({
     message: 'Esta é uma rota protegida.',
     user: req.user,
@@ -31,15 +31,10 @@ app.get('/api/profile', authMiddleware, (req: any, res) => {
 });
 
 // --- Servir Arquivos Estáticos (Frontend) ---
-// Caminho correto da build
 const distPath = path.join(__dirname, '../dist');
-
-// Servir arquivos estáticos da pasta dist
 app.use(express.static(distPath));
 
-// SPA fallback - DEVE ser registrado DEPOIS das rotas da API
-// Qualquer requisição que não corresponda a uma rota da API ou a um arquivo estático
-// será redirecionada para o index.html do frontend.
+// SPA Fallback
 app.get('*', (req, res) => {
   res.sendFile(path.join(distPath, 'index.html'));
 });
@@ -48,5 +43,6 @@ app.get('*', (req, res) => {
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 8080;
 
 app.listen(PORT, () => {
-  console.log(`Servidor rodando na porta ${PORT}`);
+  // 4. Usa o logger estruturado para a mensagem de inicialização
+  logger.info(`Servidor rodando na porta ${PORT}`);
 });

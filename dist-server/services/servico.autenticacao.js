@@ -1,6 +1,6 @@
 import { OAuth2Client } from 'google-auth-library';
 import jwt from 'jsonwebtoken';
-import { appConfig } from '../config';
+import { appConfig } from '../config.js';
 const client = new OAuth2Client(appConfig.googleClientId);
 /**
  * Verifica o token de ID do Google e extrai as informações do usuário.

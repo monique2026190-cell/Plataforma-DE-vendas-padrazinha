@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { googleLoginHandler } from '../controllers/controlador.autenticacao';
+import { googleLoginHandler } from '../controllers/controlador.autenticacao.js';
 const router = Router();
 /**
  * @swagger
