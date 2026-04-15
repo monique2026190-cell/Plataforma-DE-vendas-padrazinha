@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { buscarTodosCursos } from '../repository/repositorio.cursos';
-import { logger } from '../logs/logger';
+import { buscarTodosCursos } from '../repository/repositorio.cursos.js';
+import { logger } from '../logs/logger.js';
 
 /**
  * Lida com a requisição para buscar todos os cursos.
