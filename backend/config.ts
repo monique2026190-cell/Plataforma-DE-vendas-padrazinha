@@ -12,6 +12,7 @@ dotenv.config();
  */
 export const appConfig = {
   googleClientId: process.env.GOOGLE_CLIENT_ID,
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET,
   jwtSecret: process.env.JWT_SECRET,
 };
 
@@ -23,8 +24,12 @@ if (!appConfig.googleClientId) {
   process.exit(1); // Encerra a aplicação se a variável não estiver presente
 }
 
+if (!appConfig.googleClientSecret) {
+  console.error("[App Config] ERRO: A variável de ambiente GOOGLE_CLIENT_SECRET não foi definida.");
+  process.exit(1); // Encerra a aplicação se a variável não estiver presente
+}
+
 if (!appConfig.jwtSecret) {
   console.error("[App Config] ERRO: A variável de ambiente JWT_SECRET não foi definida.");
   process.exit(1); // Encerra a aplicação se a variável não estiver presente
 }
-

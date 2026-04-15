@@ -1,5 +1,6 @@
 
 import React, { createContext, useState, useContext, ReactNode } from 'react';
+import { env } from '../config/env'; // Importa a configuração de ambiente
 
 // Define a interface para o estado de autenticação
 interface AuthState {
@@ -29,7 +30,10 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   // Função para realizar o login
   const login = async (credential: string) => {
     try {
-      const response = await fetch('/api/auth/google', {
+      // Constrói a URL completa da API usando a variável de ambiente
+      const apiUrl = `${env.apiUrl}/api/auth/google`;
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
