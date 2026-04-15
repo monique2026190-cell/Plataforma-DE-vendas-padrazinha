@@ -19,7 +19,11 @@ export const useCursos = () => {
       try {
         setLoading(true);
         const response = await buscarCursos();
-        setCursos(response.data);
+        // Garante que estamos pegando o array de cursos da resposta
+        // Se a resposta já for o array, `response.data.cursos` será undefined,
+        // então usamos o fallback para `response.data`
+        const cursosData = response.data.cursos || response.data;
+        setCursos(cursosData);
       } catch (err: any) {
         setError(err);
       } finally {
