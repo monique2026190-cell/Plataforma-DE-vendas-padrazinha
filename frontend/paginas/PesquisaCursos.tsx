@@ -3,6 +3,7 @@ import { Container, Typography, Box, TextField, IconButton, CssBaseline, GlobalS
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
 import Footer from '../componentes/Footer';
+import Cabecalho from '../componentes/Cabecalho';
 
 const darkTheme = createTheme({
   palette: {
@@ -20,6 +21,7 @@ const PesquisaCursos: React.FC = () => {
       <CssBaseline />
       <GlobalStyles styles={{ body: { backgroundColor: "#121212" } }} />
       <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        <Cabecalho />
         <Container sx={{ mt: 10, mb: 8, flexGrow: 1 }}>
           <Typography variant="h4" gutterBottom>
             Pesquisar Cursos

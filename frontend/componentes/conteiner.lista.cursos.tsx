@@ -80,7 +80,7 @@ const CursoCard: React.FC<CursoCardProps> = ({ id, nome, descricao }) => {
               }
             }}
           >
-            Ver curso
+            Adquirir Curso
           </Button>
         </Box>
       </Card>

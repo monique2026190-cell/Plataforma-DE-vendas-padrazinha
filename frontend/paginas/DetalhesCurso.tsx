@@ -4,6 +4,8 @@ import { useParams } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import CardMetodosPagamento from '../componentes/card.metodos.pagamento.tsx';
 import Cabecalho from '../componentes/Cabecalho';
+import DescricaoCursoCard from '../componentes/DescricaoCursoCard';
+import ComentariosCard from '../componentes/ComentariosCard';
 
 const darkTheme = createTheme({
   palette: {
@@ -26,6 +28,11 @@ const DetalhesCurso: React.FC = () => {
     preco: 'R$ 49,99',
     imagem: 'https://via.placeholder.com/300'
   };
+
+  const comentarios = [
+    { user: 'Alice', text: 'Ótimo curso, aprendi muito!' },
+    { user: 'Beto', text: 'O conteúdo é bem explicado.' },
+  ];
 
   const handleComprar = () => {
     setOpen(true);
@@ -55,14 +62,13 @@ const DetalhesCurso: React.FC = () => {
             <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
               {curso.preco}
             </Typography>
-            <Typography variant="body1">
-              {curso.descricao}
-            </Typography>
             <Button variant="contained" color="primary" sx={{ mt: 3 }} onClick={handleComprar}>
               Comprar Agora
             </Button>
           </CardContent>
         </Card>
+        <DescricaoCursoCard descricao={curso.descricao} />
+        <ComentariosCard comments={comentarios} />
         <CardMetodosPagamento open={open} onClose={handleClose} />
       </Container>
     </ThemeProvider>
