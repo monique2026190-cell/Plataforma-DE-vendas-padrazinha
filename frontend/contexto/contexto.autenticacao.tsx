@@ -5,7 +5,6 @@ import { logger } from '../logs/app.log';
 import { loginComGoogle } from '../servicos/servico.autenticacao';
 import api from '../servicos/api';
 
-// Tipagem forte para o usuário
 type User = {
   id: any;
   email: string;
@@ -13,7 +12,6 @@ type User = {
   foto_perfil?: string;
 };
 
-// Interface para o estado de autenticação
 interface AuthState {
   token: string | null;
   user: User | null;
@@ -41,21 +39,14 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   useEffect(() => {
     const restaurarSessao = async () => {
       const storedToken = localStorage.getItem('token');
-      if (storedToken) {
-        logger.info('auth.session.restore.attempt', { hasToken: true });
+      const storedUser = localStorage.getItem('user');
+      if (storedToken && storedUser) {
+        logger.info('auth.session.restore.attempt', { hasToken: true, hasUser: true });
         api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
-        try {
-          // Como não temos mais um endpoint /profile, vamos apenas setar o token
-          // e assumir que o usuário está logado. A verificação de perfil completo
-          // será feita no próximo login.
-          setToken(storedToken);
-          // O ideal seria ter um endpoint que retorna o usuário a partir do token
-          // para popular o estado `user`, mas para este fluxo, vamos simplificar.
-        } catch (error) {
-          logger.warn('auth.session.restore.invalid_token', { error: 'Token inválido ou expirado' });
-          localStorage.removeItem('token');
-          delete api.defaults.headers.common['Authorization'];
-        }
+        setToken(storedToken);
+        setUser(JSON.parse(storedUser));
+      } else {
+          logger.info('auth.session.restore.no_data', { hasToken: !!storedToken, hasUser: !!storedUser });
       }
       setLoading(false);
     };
@@ -71,6 +62,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       const { token: newToken, perfilCompleto, user: loggedInUser } = response.data;
 
       localStorage.setItem('token', newToken);
+      localStorage.setItem('user', JSON.stringify(loggedInUser));
       api.defaults.headers.common['Authorization'] = `Bearer ${newToken}`;
 
       setToken(newToken);
@@ -89,6 +81,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       setToken(null);
       setUser(null);
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       delete api.defaults.headers.common['Authorization'];
       throw error;
     } finally {
@@ -101,6 +94,7 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setToken(null);
     setUser(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('user');
     delete api.defaults.headers.common['Authorization'];
     navigate('/login');
   };

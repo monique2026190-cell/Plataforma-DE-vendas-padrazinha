@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
-import { Card, CardContent, Typography, Container, Button, CardMedia, CssBaseline, GlobalStyles, CircularProgress } from '@mui/material';
+import { Card, CardContent, Typography, Container, Button, CardMedia, CssBaseline, GlobalStyles, CircularProgress, TextField } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import CardMetodosPagamento from '../componentes/card.metodos.pagamento';
 import Cabecalho from '../componentes/Cabecalho';
 import DescricaoCursoCard from '../componentes/DescricaoCursoCard';
 import ComentariosCard from '../componentes/ComentariosCard';
 import { useDetalhesCurso } from '../hooks/useDetalhesCurso';
+import { useComentarios } from '../hooks/useComentarios';
+import { useCriarComentario } from '../hooks/useCriarComentario';
+import { useAuth } from '../contexto/contexto.autenticacao';
 
 const darkTheme = createTheme({
   palette: {
@@ -20,20 +22,22 @@ const darkTheme = createTheme({
 
 const DetalhesCurso: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const cursoId = parseInt(id || '0');
   const { curso, loading, error } = useDetalhesCurso(id);
-  const [open, setOpen] = useState(false);
-
-  const comentarios = [
-    { user: 'Alice', text: 'Ótimo curso, aprendi muito!' },
-    { user: 'Beto', text: 'O conteúdo é bem explicado.' },
-  ];
+  const { data: comentarios, isLoading: loadingComentarios } = useComentarios(cursoId);
+  const { mutate: criarComentario } = useCriarComentario(cursoId);
+  const { user } = useAuth();
+  const [novoComentario, setNovoComentario] = useState('');
 
   const handleComprar = () => {
-    setOpen(true);
+    // Lógica de compra
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handleCriarComentario = () => {
+    if (user && novoComentario.trim() !== '') {
+      criarComentario({ comentario: novoComentario, usuarioId: user.id });
+      setNovoComentario('');
+    }
   };
 
   if (loading) {
@@ -74,8 +78,36 @@ const DetalhesCurso: React.FC = () => {
           </CardContent>
         </Card>
         <DescricaoCursoCard descricao={curso.descricao} />
-        <ComentariosCard comments={comentarios} />
-        <CardMetodosPagamento open={open} onClose={handleClose} />
+        
+        <div className="my-8">
+          <Typography variant="h5" component="h2" sx={{ mb: 4 }}>
+            Comentários
+          </Typography>
+          {user && (
+            <div className="mb-4">
+              <TextField
+                fullWidth
+                multiline
+                rows={4}
+                variant="outlined"
+                label="Deixe seu comentário"
+                value={novoComentario}
+                onChange={(e) => setNovoComentario(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <Button variant="contained" color="primary" onClick={handleCriarComentario}>
+                Enviar Comentário
+              </Button>
+            </div>
+          )}
+          {loadingComentarios ? (
+            <CircularProgress />
+          ) : (
+            comentarios?.map((comentario: any) => (
+              <ComentariosCard key={comentario.id} comentario={comentario} />
+            ))
+          )}
+        </div>
       </Container>
     </ThemeProvider>
   );

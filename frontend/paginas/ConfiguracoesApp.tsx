@@ -7,10 +7,12 @@ import {
   GlobalStyles,
   Card,
   CardContent,
-  Grid
+  Grid,
+  Button
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Notifications, Person, Settings } from '@mui/icons-material';
+import { Notifications, Person, Settings, Logout as LogoutIcon } from '@mui/icons-material';
+import { useAuth } from '../contexto/contexto.autenticacao';
 
 const darkTheme = createTheme({
   palette: {
@@ -43,14 +45,15 @@ const cardStyle = {
 };
 
 const ConfiguracoesApp: React.FC = () => {
+  const { logout } = useAuth();
+
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <GlobalStyles styles={{ body: { backgroundColor: "#0f1115" } }} />
 
-      <Container maxWidth="sm" sx={{ mt: 6 }}>
+      <Container maxWidth="sm" sx={{ mt: 6, mb: 6 }}>
         
-        {/* Header */}
         <Box sx={{ mb: 5 }}>
           <Typography variant="h4" sx={{ fontWeight: 600 }}>
             Configurações
@@ -60,7 +63,6 @@ const ConfiguracoesApp: React.FC = () => {
           </Typography>
         </Box>
 
-        {/* Seção: Conta */}
         <Box sx={{ mb: 4 }}>
           <Typography sx={{ mb: 2, fontSize: 14, color: 'text.secondary' }}>
             CONTA
@@ -101,8 +103,7 @@ const ConfiguracoesApp: React.FC = () => {
           </Grid>
         </Box>
 
-        {/* Seção: Preferências */}
-        <Box>
+        <Box sx={{ mb: 5 }}>
           <Typography sx={{ mb: 2, fontSize: 14, color: 'text.secondary' }}>
             PREFERÊNCIAS
           </Typography>
@@ -124,6 +125,21 @@ const ConfiguracoesApp: React.FC = () => {
               </Card>
             </Grid>
           </Grid>
+        </Box>
+
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <Button 
+                variant="outlined" 
+                color="error"
+                startIcon={<LogoutIcon />}
+                onClick={logout}
+                sx={{
+                    textTransform: 'none',
+                    fontWeight: 500,
+                }}
+            >
+                Sair da Conta
+            </Button>
         </Box>
 
       </Container>

@@ -1,6 +1,7 @@
 -- Exclui as tabelas se elas já existirem para garantir um estado limpo
 DROP TABLE IF EXISTS usuarios CASCADE;
 DROP TABLE IF EXISTS cursos CASCADE;
+DROP TABLE IF EXISTS comentarios CASCADE;
 
 -- Cria a tabela de usuários
 CREATE TABLE usuarios (
@@ -23,5 +24,16 @@ CREATE TABLE cursos (
     usuario_id INTEGER NOT NULL, -- Chave estrangeira para a tabela de usuários
     criado_em TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
     atualizado_em TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
+);
+
+-- Cria a tabela de comentarios
+CREATE TABLE comentarios (
+    id SERIAL PRIMARY KEY,
+    curso_id INTEGER NOT NULL,
+    usuario_id INTEGER NOT NULL,
+    comentario TEXT NOT NULL,
+    criado_em TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_curso FOREIGN KEY (curso_id) REFERENCES cursos(id),
     CONSTRAINT fk_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
 );
