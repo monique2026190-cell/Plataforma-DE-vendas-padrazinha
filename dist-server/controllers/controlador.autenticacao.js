@@ -1,41 +1,46 @@
-import { logger } from '../logs/logger.js';
-import { verifyGoogleToken, generateJwt, } from '../services/servico.autenticacao.js';
-import { findOrCreateUser } from '../repository/repositorio.usuario.js';
+import { OAuth2Client } from 'google-auth-library';
+import jwt from 'jsonwebtoken';
+// Mocked user data - replace with your actual user data from a database
+const users = [
+    {
+        id: 'user_123',
+        email: 'test@example.com',
+        stripeAccountId: 'acct_1P6gSgP2gSg2gSg2',
+    },
+];
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 export const googleLoginHandler = async (req, res) => {
     const { credential } = req.body;
     if (!credential) {
-        logger.warn('auth.google.missing_credential');
-        return res.status(400).json({ message: 'Token de credencial não fornecido.' });
+        return res.status(400).json({ message: 'Credential token not provided.' });
     }
     try {
-        const googleUser = await verifyGoogleToken(credential);
-        if (!googleUser) {
-            logger.warn({ credential }, 'auth.google.invalid_token');
-            return res.status(401).json({ message: 'Token do Google inválido.' });
+        const ticket = await client.verifyIdToken({
+            idToken: credential,
+            audience: process.env.GOOGLE_CLIENT_ID,
+        });
+        const payload = ticket.getPayload();
+        if (!payload) {
+            return res.status(401).json({ message: 'Invalid Google token.' });
         }
-        logger.info({ email: googleUser.email }, 'auth.google.token_verified');
-        const appUser = await findOrCreateUser({
-            sub: googleUser.providerId,
-            name: googleUser.name,
-            email: googleUser.email,
-            picture: googleUser.picture
-        });
-        const token = generateJwt(appUser);
-        logger.info({ email: appUser.email, userId: appUser.id }, 'auth.jwt.generated');
-        const userForFrontend = {
-            id: appUser.id,
-            email: appUser.email,
-            name: appUser.nome,
-            picture: appUser.foto_perfil
-        };
-        res.status(200).json({
-            token,
-            perfilCompleto: appUser.perfil_completo,
-            user: userForFrontend,
-        });
+        // --- DATABASE LOGIC START ---
+        // In a real application, you would find or create a user in your database
+        // using the information from the payload (e.g., payload.email)
+        let user = users.find(u => u.email === payload.email);
+        if (!user) {
+            // This is where you would create a new user in your database
+            console.log(`User with email ${payload.email} not found. A real app would create one.`);
+            // For this example, we'll just use a mock user if not found
+            // In a real app, you would probably return an error or create the user
+            return res.status(404).json({ message: "User not found." });
+        }
+        // --- DATABASE LOGIC END ---
+        // Create a JWT for your application session
+        const appJwt = jwt.sign({ userId: user.id, email: user.email }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        res.status(200).json({ token: appJwt });
     }
     catch (error) {
-        logger.error({ error: { message: error.message, stack: error.stack }, credential }, 'auth.google.login_handler_error');
-        res.status(500).json({ message: 'Erro interno do servidor' });
+        console.error('Error during Google login:', error);
+        res.status(401).json({ message: 'Invalid or expired Google token.' });
     }
 };

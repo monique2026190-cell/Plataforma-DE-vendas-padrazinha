@@ -1,22 +1,26 @@
+
 import React from 'react';
-import { Card, CardContent, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 interface DescricaoCursoCardProps {
+  nome: string;
   descricao: string;
+  preco: string;
 }
 
-const DescricaoCursoCard: React.FC<DescricaoCursoCardProps> = ({ descricao }) => {
+const DescricaoCursoCard: React.FC<DescricaoCursoCardProps> = ({ nome, descricao, preco }) => {
   return (
-    <Card sx={{ bgcolor: 'background.paper', mt: 3 }}>
-      <CardContent>
-        <Typography variant="h5" sx={{ mb: 2 }}>
-          Descrição do Curso
-        </Typography>
-        <Typography variant="body1">
-          {descricao}
-        </Typography>
-      </CardContent>
-    </Card>
+    <Box sx={{ p: 3 }}>
+      <Typography gutterBottom variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
+        {nome}
+      </Typography>
+      <Typography variant="body1" sx={{ color: '#BDBDBD', marginBottom: 2 }}>
+        {descricao}
+      </Typography>
+      <Typography variant="h5" sx={{ marginBottom: 2, color: '#BB86FC', fontWeight: 'bold' }}>
+        {preco}
+      </Typography>
+    </Box>
   );
 };
 

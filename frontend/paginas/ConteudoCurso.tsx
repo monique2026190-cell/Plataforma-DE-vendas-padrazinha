@@ -6,10 +6,12 @@ import {
   CssBaseline, 
   GlobalStyles, 
   Card,
-  CardContent
+  CardContent,
+  IconButton,
 } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import BotaoConfiguracoesCurso from '../componentes/BotaoConfiguracoesCurso';
 import BotaoCriarSecao from '../componentes/BotaoCriarSecao';
 import Cabecalho from '../componentes/Cabecalho';
@@ -36,6 +38,7 @@ interface EditingFolderInfo {
 
 const ConteudoCurso: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [secaoModalOpen, setSecaoModalOpen] = useState(false);
   const [pastaModalOpen, setPastaModalOpen] = useState(false);
   const [editPastaModalOpen, setEditPastaModalOpen] = useState(false);
@@ -136,7 +139,26 @@ const ConteudoCurso: React.FC = () => {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <GlobalStyles styles={{ body: { backgroundColor: "#121212" } }} />
-      <Cabecalho showBackButton={true} />
+      <Cabecalho />
+
+      <IconButton
+        aria-label="back"
+        onClick={() => navigate(-1)}
+        sx={{
+          position: 'fixed',
+          top: 16,
+          left: 16,
+          zIndex: 1300, // Garante que fique acima do cabeçalho
+          color: 'white',
+          backgroundColor: 'rgba(0, 0, 0, 0.3)',
+          '&:hover': {
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+          },
+        }}
+      >
+        <ArrowBackIcon />
+      </IconButton>
+
       <Container component="main" sx={{ mt: 10, flexGrow: 1, pb: 12 }}>
         <Card sx={{ mb: 4, bgcolor: '#1E1E1E', borderRadius: 3, boxShadow: '0 4px 20px rgba(0,0,0,0.2)' }}>
           <CardContent>

@@ -1,9 +1,14 @@
-import React from 'react';
+
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Box, Typography, Button, Container, CardMedia, CssBaseline, GlobalStyles } from '@mui/material';
+import { Box, Container, CssBaseline, GlobalStyles } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cabecalho from '../componentes/Cabecalho';
 import Footer from '../componentes/Footer';
+import CardMetodosPagamento from '../componentes/card.metodos.pagamento';
+import CarrosselImagens from '../componentes/CarrosselImagens';
+import DescricaoCursoCard from '../componentes/DescricaoCursoCard';
+import BotaoComprar from '../componentes/BotaoComprar';
 
 const darkTheme = createTheme({
   palette: {
@@ -20,6 +25,10 @@ const darkTheme = createTheme({
 
 const CursoPreview: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleOpenModal = () => setModalOpen(true);
+  const handleCloseModal = () => setModalOpen(false);
 
   // Mock data for the course - replace with actual API call
   const curso = {
@@ -37,30 +46,14 @@ const CursoPreview: React.FC = () => {
             <Cabecalho />
             <Container maxWidth="md" sx={{ flexGrow: 1, mt: 10, mb: 4 }}>
               <Box sx={{ backgroundColor: '#1E1E1E', borderRadius: '12px', overflow: 'hidden' }}>
-                  <CardMedia
-                    component="img"
-                    height="400"
-                    image={curso.imagemUrl}
-                    alt={curso.nome}
-                  />
-                  <Box sx={{ p: 3 }}>
-                    <Typography gutterBottom variant="h4" component="div" sx={{ fontWeight: 'bold' }}>
-                      {curso.nome}
-                    </Typography>
-                    <Typography variant="body1" sx={{ color: '#BDBDBD', marginBottom: 2 }}>
-                      {curso.descricao}
-                    </Typography>
-                    <Typography variant="h5" sx={{ marginBottom: 2, color: '#BB86FC', fontWeight: 'bold' }}>
-                      {curso.preco}
-                    </Typography>
-                    <Button variant="contained" size="large" sx={{ backgroundColor: '#BB86FC', '&:hover': { backgroundColor: '#9e66d4' } }}>
-                      Comprar Agora
-                    </Button>
-                  </Box>
+                  <CarrosselImagens imagemUrl={curso.imagemUrl} nomeCurso={curso.nome} />
+                  <DescricaoCursoCard nome={curso.nome} descricao={curso.descricao} preco={curso.preco} />
+                  <BotaoComprar onClick={handleOpenModal} />
               </Box>
             </Container>
             <Footer />
         </Box>
+        <CardMetodosPagamento open={modalOpen} onClose={handleCloseModal} />
     </ThemeProvider>
   );
 };

@@ -18,6 +18,7 @@ import Aula from './paginas/Aula';
 import CursoPreview from './paginas/CursoPreview';
 import { Provedores } from './paginas/Provedores';
 import { HistoricoFinanceiro } from './paginas/HistoricoFinanceiro';
+import EditorNota from './paginas/EditorNota'; // Importa a nova página
 
 
 // Um componente para lidar com a rota raiz
@@ -48,7 +49,10 @@ const AppRoutes: React.FC = () => {
         <Route path="/conteudo-curso/:id" element={<ConteudoCurso />} />
         <Route path="/criar-proposta" element={<CriarProposta />} />
         <Route path="/curso/:id/configuracoes" element={<ConfiguracoesCurso />} />
+        {/* A rota da aula usa :id para o curso, vamos manter a consistência */}
         <Route path="/curso/:id/aula/:aulaId" element={<Aula />} />
+        {/* Nova rota para o editor de notas */}
+        <Route path="/curso/:id/aula/:aulaId/nova-nota" element={<EditorNota />} />
         <Route path="/curso/preview/:id" element={<CursoPreview />} />
         <Route path="/notificacoes" element={<Notificacoes />} />
         <Route path="/meus-cursos" element={<MeusCursos />} />
