@@ -1,9 +1,12 @@
 
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, Stack, ButtonBase } from '@mui/material';
 import { Campaign as CampaignIcon } from '@mui/icons-material';
+import ModalSelecaoCampanha from './modal.selecao.campanha';
 
 const SessaoMarketing: React.FC = () => {
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [plataformaSelecionada, setPlataformaSelecionada] = useState('');
 
   const cardStyle = {
     p: 2,
@@ -26,12 +29,18 @@ const SessaoMarketing: React.FC = () => {
         <Typography variant="h6" sx={{ mb: 2 }}>Configuração de Marketing</Typography>
         
         <Stack spacing={2}>
-            <ButtonBase onClick={() => alert('Funcionalidade a ser implementada')} sx={cardStyle}>
+            <ButtonBase onClick={() => setModalOpen(true)} sx={cardStyle}>
                 <CampaignIcon sx={{ color: 'text.secondary', mr: 1.5 }} />
-                <Typography variant="body1" sx={{ color: 'text.secondary', mr: 0.5 }}>Campanha:</Typography>
-                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>Selecionar</Typography>
+                <Typography variant="body1" sx={{ color: 'text.secondary', mr: 0.5 }}>Plataforma ADS:</Typography>
+                <Typography variant="body1" sx={{ fontWeight: 'bold' }}>{plataformaSelecionada || 'Selecionar'}</Typography>
             </ButtonBase>
         </Stack>
+
+        <ModalSelecaoCampanha 
+            open={isModalOpen} 
+            onClose={() => setModalOpen(false)} 
+            onSelectCampanha={setPlataformaSelecionada} 
+        />
     </Box>
   );
 };

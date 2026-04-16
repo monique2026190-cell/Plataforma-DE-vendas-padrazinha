@@ -12,9 +12,11 @@ import {
   Toolbar,
   Typography,
   IconButton,
+  SelectChangeEvent,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { ArrowBack as ArrowBackIcon, Save as SaveIcon } from '@mui/icons-material';
+import CardEdicaoNota from '../componentes/CardEdicaoNota';
 
 const darkTheme = createTheme({
   palette: {
@@ -29,12 +31,41 @@ const darkTheme = createTheme({
 const EditorNota: React.FC = () => {
   const navigate = useNavigate();
   const [conteudo, setConteudo] = useState('');
+  const [formats, setFormats] = useState<string[]>(() => []);
+  const [font, setFont] = useState('Roboto');
+  const [color, setColor] = useState('#ffffff');
+
+  const handleFormat = (event: React.MouseEvent<HTMLElement>, newFormats: string[]) => {
+    setFormats(newFormats);
+  };
+
+  const handleFontChange = (event: SelectChangeEvent) => {
+    setFont(event.target.value as string);
+  };
+
+  const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setColor(event.target.value);
+  };
 
   const handleSave = () => {
     // Lógica para salvar a nota (será implementada)
-    console.log('Nota salva:', conteudo);
+    console.log('Nota salva:', { conteudo, formats, font, color });
     navigate(-1); // Volta para a página anterior
   };
+
+  const handleCancel = () => {
+    navigate(-1); // Volta para a página anterior
+  };
+
+  const getTextareaStyle = () => ({
+    fontWeight: formats.includes('bold') ? 'bold' : 'normal',
+    fontStyle: formats.includes('italic') ? 'italic' : 'normal',
+    textDecoration: formats.includes('underlined') ? 'underline' : 'none',
+    fontFamily: font,
+    color: color,
+    height: '100% !important',
+    overflow: 'auto !important',
+  });
 
   return (
     <ThemeProvider theme={darkTheme}>
@@ -52,7 +83,7 @@ const EditorNota: React.FC = () => {
             edge="start"
             color="inherit"
             aria-label="back"
-            onClick={() => navigate(-1)}
+            onClick={handleCancel}
           >
             <ArrowBackIcon />
           </IconButton>
@@ -60,31 +91,36 @@ const EditorNota: React.FC = () => {
             Editar Nota
           </Typography>
           <Button color="inherit" startIcon={<SaveIcon />} onClick={handleSave}>
-            Salvar e Fechar
+            Salvar
           </Button>
         </Toolbar>
       </AppBar>
-      <Container component="main" sx={{ pt: 10, height: '100vh' }}>
-        <Box sx={{ height: 'calc(100% - 64px)', display: 'flex', flexDirection: 'column' }}>
+      <Container component="main" sx={{ pt: 10, height: '100vh', display: 'flex', flexDirection: 'column' }}>
+        <CardEdicaoNota 
+          formats={formats} 
+          onFormatChange={handleFormat} 
+          font={font}
+          onFontChange={handleFontChange}
+          color={color}
+          onColorChange={handleColorChange}
+        />
+        <Box sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column', bgcolor: '#1E1E1E', borderRadius: 1, p: 2, mt: 1 }}>
           <TextField
             fullWidth
             multiline
+            variant="standard"
             placeholder="Comece a escrever sua nota aqui..."
             value={conteudo}
             onChange={(e) => setConteudo(e.target.value)}
             sx={{
               flexGrow: 1,
-              '& .MuiOutlinedInput-root': {
-                height: '100%',
-                alignItems: 'flex-start',
-                '& .MuiOutlinedInput-notchedOutline': {
-                  border: 'none',
-                },
-              },
-              '& .MuiInputBase-input': {
-                height: '100% !important',
-                overflow: 'auto !important'
-              }
+              border: 'none',
+              '& .MuiInput-underline:before': { borderBottom: 0 },
+              '& .MuiInput-underline:after': { borderBottom: 0 },
+            }}
+            InputProps={{
+              disableUnderline: true,
+              style: getTextareaStyle(),
             }}
           />
         </Box>

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Typography, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 
@@ -15,7 +16,7 @@ export const SectionTitle: React.FC<{ children: React.ReactNode }> = ({ children
       px: 2,
     }}
   >
-    {children}
+    {typeof children === 'string' ? children.toUpperCase() : children}
   </Typography>
 );
 

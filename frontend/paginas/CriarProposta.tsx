@@ -10,7 +10,7 @@ import SessaoFinanceira from '../componentes/criacao.sessao.config.financeira';
 import SessaoMarketing from '../componentes/criacao.sessao.config.marketing';
 import SessaoInfoCurso from '../componentes/criacao.sessao.info.curso';
 import SessaoAnexoPrevia from '../componentes/criacao.sessao.anexo.previa';
-import PreviaCarrossel from '../componentes/criacao.previa.carrossel';
+import PreviaGrid from '../componentes/criacao.previa.grid';
 
 const darkTheme = createTheme({
   palette: {
@@ -78,12 +78,12 @@ const CriarProposta: React.FC = () => {
             Criar Proposta de Curso
           </Typography>
           <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
-            <SessaoInfoCurso nome={nome} setNome={setNome} descricao={descricao} setDescricao={setDescricao} />
-
             <SessaoAnexoPrevia previa={previas.length > 0 ? previas[0] : null} onPreviaChange={handlePreviaChange} />
 
-            <PreviaCarrossel files={previas} />
-
+            <PreviaGrid files={previas} />
+            <Box sx={{ mt: 4 }}>
+              <SessaoInfoCurso nome={nome} setNome={setNome} descricao={descricao} setDescricao={setDescricao} />
+            </Box>
             <SessaoFinanceira preco={preco} setPreco={setPreco} moeda={moeda} setMoeda={setMoeda} provedor={provedor} setProvedor={setProvedor}/>
             
             <SessaoMarketing />

@@ -8,7 +8,7 @@ import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 import { GeralSection } from './curso.sessao.geral';
 import { ConteudoSection } from './curso.sessao.conteudo';
-import { AcessoPublicacaoSection } from './curso.sessao.acessoepublicacao';
+import { AuditoriaSection } from './curso.sessao.auditoria';
 import { ZonaPerigoSection } from './curso.sessao.zonadeperigo';
 
 
@@ -72,7 +72,7 @@ export const ConfiguracoesCurso: React.FC = () => {
         <Container component="main" maxWidth="md" sx={{ flexGrow: 1, overflowY: 'auto', py: 3 }}>
          <GeralSection />
          <ConteudoSection />
-         <AcessoPublicacaoSection />
+         <AuditoriaSection />
          <ZonaPerigoSection />
         </Container>
       </Box>
