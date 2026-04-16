@@ -13,7 +13,7 @@ const router = Router();
  *       200:
  *         description: Lista de cursos
  */
-router.get('/api/cursos', authMiddleware, getCursos);
+router.get('/cursos', authMiddleware, getCursos);
 
 /**
  * @swagger
@@ -24,6 +24,6 @@ router.get('/api/cursos', authMiddleware, getCursos);
  *       201:
  *         description: Curso criado com sucesso
  */
-router.post('/api/cursos', authMiddleware, criarCurso);
+router.post('/cursos', authMiddleware, criarCurso);
 
 export default router;
