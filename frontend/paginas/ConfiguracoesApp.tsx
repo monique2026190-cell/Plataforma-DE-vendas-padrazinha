@@ -50,7 +50,18 @@ export const ConfiguracoesApp: React.FC = () => {
       <Box sx={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
         <AppBar position="static" sx={{ bgcolor: 'background.paper', boxShadow: 'none', borderBottom: '1px solid rgba(255, 255, 255, 0.12)' }}>
           <Toolbar>
-            <IconButton edge="start" color="inherit" aria-label="voltar" onClick={() => navigate(-1)}>
+            <IconButton 
+              aria-label="voltar" 
+              onClick={() => navigate(-1)}
+              sx={{
+                marginRight: '10px',
+                color: 'white',
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                },
+              }}
+            >
               <ArrowBackIcon />
             </IconButton>
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>

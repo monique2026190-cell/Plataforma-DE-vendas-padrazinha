@@ -11,6 +11,8 @@ import {
   SpeedDialIcon,
   SpeedDialAction,
   IconButton,
+  AppBar,
+  Toolbar
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import {
@@ -18,7 +20,6 @@ import {
   AttachFile as AttachFileIcon,
   ArrowBack as ArrowBackIcon,
 } from '@mui/icons-material';
-import Cabecalho from '../componentes/Cabecalho';
 import ModalAdicionarArquivo from '../componentes/ModalAdicionarArquivo';
 import ListaNotas from '../componentes/ListaNotas';
 import ListaArquivos from '../componentes/ListaArquivos';
@@ -30,6 +31,18 @@ const darkTheme = createTheme({
       default: '#121212',
       paper: '#1E1E1E',
     },
+     primary: {
+      main: '#5E97F6',
+    },
+    text: {
+      primary: '#EAEAEA',
+      secondary: '#A9A9A9',
+    },
+  },
+  typography: {
+    fontFamily: 'Inter, sans-serif',
+    h4: { fontWeight: 600 },
+    h6: { fontWeight: 600 },
   },
 });
 
@@ -83,30 +96,31 @@ const Aula: React.FC = () => {
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
       <GlobalStyles styles={{ body: { backgroundColor: "#121212" } }} />
-      <Cabecalho />
+      
+      <AppBar position="static" sx={{ bgcolor: 'background.paper', boxShadow: 'none', borderBottom: '1px solid rgba(255, 255, 255, 0.12)' }}>
+        <Toolbar>
+          <IconButton 
+            aria-label="voltar" 
+            onClick={() => navigate(-1)}
+            sx={{
+              marginRight: '10px',
+              color: 'white',
+              backgroundColor: 'rgba(0, 0, 0, 0.3)',
+              '&:hover': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.5)',
+              },
+            }}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+            Aula: Bem-vindo ao Módulo
+          </Typography>
+        </Toolbar>
+      </AppBar>
 
-      <IconButton
-        aria-label="back"
-        onClick={() => navigate(-1)}
-        sx={{
-          position: 'fixed',
-          top: 16,
-          left: 16,
-          zIndex: 1300,
-          color: 'white',
-          backgroundColor: 'rgba(0, 0, 0, 0.3)',
-          '&:hover': { backgroundColor: 'rgba(0, 0, 0, 0.5)' },
-        }}
-      >
-        <ArrowBackIcon />
-      </IconButton>
-
-      <Container component="main" sx={{ mt: 10, flexGrow: 1, pb: 12 }}>
-
-        <Typography variant="h4" component="h1" gutterBottom>
-          Aula: Bem-vindo ao Módulo
-        </Typography>
-        <Typography variant="subtitle1" color="text.secondary">
+      <Container component="main" sx={{ pt: 4, flexGrow: 1, pb: 12 }}>
+        <Typography variant="subtitle1" color="text.secondary" gutterBottom>
           ID da Pasta: {aulaId} (Curso: {cursoId})
         </Typography>
         

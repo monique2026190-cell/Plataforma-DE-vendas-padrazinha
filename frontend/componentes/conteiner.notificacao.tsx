@@ -1,12 +1,15 @@
 import React from 'react';
 import { Card, CardContent, Typography, Box, Avatar } from '@mui/material';
-import { School, Comment, ThumbUp } from '@mui/icons-material';
+import { School, Comment, ThumbUp, MonetizationOn, HourglassEmpty } from '@mui/icons-material';
 
 interface NotificacaoCardProps {
-  tipo: 'novo_curso' | 'novo_comentario' | 'curtida';
+  tipo: 'novo_curso' | 'novo_comentario' | 'curtida' | 'venda' | 'pendente';
   mensagem: string;
   data: string;
   lida?: boolean;
+  valor?: number;
+  metodo?: string;
+  pais?: string;
 }
 
 const getNotificationStyle = (tipo: NotificacaoCardProps['tipo']) => {
@@ -17,12 +20,16 @@ const getNotificationStyle = (tipo: NotificacaoCardProps['tipo']) => {
       return { icon: <Comment />, color: '#03DAC6' };
     case 'curtida':
       return { icon: <ThumbUp />, color: '#CF6679' };
+    case 'venda':
+        return { icon: <MonetizationOn />, color: '#03DAC5' };
+    case 'pendente':
+        return { icon: <HourglassEmpty />, color: '#FFAB00' };
     default:
       return { icon: null, color: '#FFFFFF' };
   }
 };
 
-const NotificacaoCard: React.FC<NotificacaoCardProps> = ({ tipo, mensagem, data, lida = false }) => {
+const NotificacaoCard: React.FC<NotificacaoCardProps> = ({ tipo, mensagem, data, lida = false, valor, metodo, pais }) => {
   const { icon, color } = getNotificationStyle(tipo);
 
   return (
@@ -48,6 +55,23 @@ const NotificacaoCard: React.FC<NotificacaoCardProps> = ({ tipo, mensagem, data,
         <Typography variant="body1" sx={{ color: '#E0E0E0', fontWeight: lida ? 'normal' : 'bold' }}>
           {mensagem}
         </Typography>
+        <Box sx={{ mt: 1 }}>
+          {valor && (
+            <Typography variant="body2" sx={{ color: '#A0A0A0' }}>
+              Valor: {valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+            </Typography>
+          )}
+          {metodo && (
+            <Typography variant="body2" sx={{ color: '#A0A0A0' }}>
+              Método: {metodo}
+            </Typography>
+          )}
+          {pais && (
+            <Typography variant="body2" sx={{ color: '#A0A0A0' }}>
+              País: {pais}
+            </Typography>
+          )}
+        </Box>
         <Typography variant="caption" sx={{ color: '#A0A0A0', mt: 0.5 }}>
           {data}
         </Typography>

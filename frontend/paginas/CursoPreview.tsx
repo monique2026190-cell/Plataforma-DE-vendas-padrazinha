@@ -1,14 +1,14 @@
 
 import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { Box, Container, CssBaseline, GlobalStyles } from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+import { AppBar, Toolbar, IconButton, Box, Container, CssBaseline, GlobalStyles, Card } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Cabecalho from '../componentes/Cabecalho';
-import Footer from '../componentes/Footer';
+import { ArrowBack as ArrowBackIcon } from '@mui/icons-material';
 import CardMetodosPagamento from '../componentes/card.metodos.pagamento';
 import CarrosselImagens from '../componentes/CarrosselImagens';
 import DescricaoCursoCard from '../componentes/DescricaoCursoCard';
 import BotaoComprar from '../componentes/BotaoComprar';
+import Logo from '../componentes/logo';
 
 const darkTheme = createTheme({
   palette: {
@@ -21,16 +21,21 @@ const darkTheme = createTheme({
       main: '#BB86FC',
     },
   },
+  typography: {
+    fontFamily: 'Inter, sans-serif',
+    h5: { fontWeight: 600 },
+    h6: { fontWeight: 600 },
+  },
 });
 
 const CursoPreview: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [modalOpen, setModalOpen] = useState(false);
 
   const handleOpenModal = () => setModalOpen(true);
   const handleCloseModal = () => setModalOpen(false);
 
-  // Mock data for the course - replace with actual API call
   const curso = {
     nome: 'Curso de Exemplo',
     descricao: 'Esta é uma descrição de exemplo para o curso. Aprenda tudo sobre este tópico incrível com nosso curso abrangente.',
@@ -40,20 +45,53 @@ const CursoPreview: React.FC = () => {
 
   return (
     <ThemeProvider theme={darkTheme}>
-        <CssBaseline />
-        <GlobalStyles styles={{ body: { backgroundColor: darkTheme.palette.background.default } }} />
-        <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-            <Cabecalho />
-            <Container maxWidth="md" sx={{ flexGrow: 1, mt: 10, mb: 4 }}>
-              <Box sx={{ backgroundColor: '#1E1E1E', borderRadius: '12px', overflow: 'hidden' }}>
-                  <CarrosselImagens imagemUrl={curso.imagemUrl} nomeCurso={curso.nome} />
-                  <DescricaoCursoCard nome={curso.nome} descricao={curso.descricao} preco={curso.preco} />
-                  <BotaoComprar onClick={handleOpenModal} />
-              </Box>
-            </Container>
-            <Footer />
-        </Box>
-        <CardMetodosPagamento open={modalOpen} onClose={handleCloseModal} />
+      <CssBaseline />
+      <GlobalStyles styles={{ body: { backgroundColor: darkTheme.palette.background.default } }} />
+      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+        
+        <AppBar position="static" sx={{ bgcolor: 'background.paper', boxShadow: 'none', borderBottom: '1px solid rgba(255, 255, 255, 0.12)' }}>
+          <Toolbar sx={{ justifyContent: 'space-between' }}>
+            <IconButton 
+              aria-label="voltar" 
+              onClick={() => navigate(-1)}
+              sx={{
+                color: 'white',
+                backgroundColor: 'rgba(0, 0, 0, 0.3)',
+                '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                },
+              }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'center' }}>
+                <Logo />
+            </Box>
+            <Box sx={{ width: 48 }} /> 
+          </Toolbar>
+        </AppBar>
+
+        <Container maxWidth="md" sx={{ flexGrow: 1, mt: 4, mb: 4 }}>
+          
+          {/* Seção do Carrossel */}
+          <Card sx={{ mb: 3, borderRadius: '12px', overflow: 'hidden' }}>
+            <CarrosselImagens imagemUrl={curso.imagemUrl} nomeCurso={curso.nome} />
+          </Card>
+
+          {/* Seção da Descrição */}
+          <Card sx={{ mb: 3, borderRadius: '12px' }}>
+            <DescricaoCursoCard nome={curso.nome} descricao={curso.descricao} preco={curso.preco} />
+          </Card>
+
+          {/* Seção do Botão de Compra */}
+          <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2 }}>
+            <BotaoComprar onClick={handleOpenModal} />
+          </Box>
+
+        </Container>
+        
+      </Box>
+      <CardMetodosPagamento open={modalOpen} onClose={handleCloseModal} />
     </ThemeProvider>
   );
 };
