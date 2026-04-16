@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from 'react';
 import { buscarCursoPorId } from '../servicos/servico.cursos';
 import { Curso } from '../tipos/curso';
@@ -14,7 +15,8 @@ export const useDetalhesCurso = (id: string | undefined) => {
       try {
         setLoading(true);
         const response = await buscarCursoPorId(id);
-        setCurso(response.data);
+        const cursoData = response?.data?.curso ?? response?.data;
+        setCurso(cursoData && typeof cursoData === 'object' ? cursoData : null);
       } catch (err: any) {
         setError(err);
       } finally {
