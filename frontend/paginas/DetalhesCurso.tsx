@@ -14,8 +14,8 @@ const darkTheme = createTheme({
       paper: '#1E1E1E',
     },
     primary: {
-        main: '#BB86FC',
-      },
+      main: '#BB86FC',
+    },
   },
 });
 
@@ -27,46 +27,50 @@ const DetalhesCurso: React.FC = () => {
     // Lógica de compra
   };
 
-  if (loading) {
-    return <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}><CircularProgress /></Box>;
-  }
-
-  if (error) {
-    return <Typography sx={{ textAlign: 'center', mt: 4 }}>Erro ao carregar o curso.</Typography>;
-  }
-
-  if (!curso) {
-    return <Typography sx={{ textAlign: 'center', mt: 4 }}>Curso não encontrado.</Typography>;
-  }
-
   return (
     <ThemeProvider theme={darkTheme}>
       <CssBaseline />
-      <GlobalStyles styles={{ body: { backgroundColor: "#121212" } }} />
+      <GlobalStyles styles={{ body: { backgroundColor: '#121212', display: 'flex', flexDirection: 'column', minHeight: '100vh' } }} />
       <Cabecalho />
-      <Container component="main" sx={{ mt: 10, mb: 4 }}>
-        <Card sx={{ bgcolor: 'background.paper', mb: 4 }}>
-          {curso.capa_curso && (
-            <CardMedia
-              component="img"
-              height="300"
-              image={curso.capa_curso}
-              alt={`Imagem do ${curso.nome}`}
-            />
-          )}
-          <CardContent>
-            <Typography component="h1" variant="h4" sx={{ mb: 2 }}>
-              {curso.nome}
-            </Typography>
-            <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
-              R$ {curso.preco?.toFixed(2)}
-            </Typography>
-            <Button variant="contained" color="primary" sx={{ mt: 3 }} onClick={handleComprar}>
-              Comprar Agora
-            </Button>
-          </CardContent>
-        </Card>
-        {curso.descricao && <DescricaoCursoCard descricao={curso.descricao} />}
+      <Container component="main" sx={{ mt: 10, mb: 4, flexGrow: 1 }}>
+        {loading ? (
+          <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
+            <CircularProgress />
+          </Box>
+        ) : error ? (
+          <Typography sx={{ textAlign: 'center', mt: 4, color: 'error.main' }}>
+            Erro ao carregar o curso. Tente novamente mais tarde.
+          </Typography>
+        ) : !curso ? (
+          <Typography sx={{ textAlign: 'center', mt: 4 }}>
+            Curso não encontrado.
+          </Typography>
+        ) : (
+          <>
+            <Card sx={{ bgcolor: 'background.paper', mb: 4 }}>
+              {curso.capa_curso && (
+                <CardMedia
+                  component="img"
+                  height="300"
+                  image={curso.capa_curso}
+                  alt={`Imagem do ${curso.nome}`}
+                />
+              )}
+              <CardContent>
+                <Typography component="h1" variant="h4" sx={{ mb: 2 }}>
+                  {curso.nome}
+                </Typography>
+                <Typography variant="h6" color="text.secondary" sx={{ mb: 2 }}>
+                  R$ {curso.preco?.toFixed(2)}
+                </Typography>
+                <Button variant="contained" color="primary" sx={{ mt: 3 }} onClick={handleComprar}>
+                  Comprar Agora
+                </Button>
+              </CardContent>
+            </Card>
+            {curso.descricao && <DescricaoCursoCard descricao={curso.descricao} />}
+          </>
+        )}
       </Container>
     </ThemeProvider>
   );
