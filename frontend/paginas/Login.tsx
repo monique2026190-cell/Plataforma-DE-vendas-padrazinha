@@ -38,10 +38,9 @@ const Login: React.FC = () => {
 
   const handleEmailPasswordLogin = (event: React.FormEvent) => {
     event.preventDefault();
-    // Here you would typically call a login function from your auth context
-    // For now, we'll just log the credentials
-    console.log({ email, password });
-    // Example: login(email, password);
+    if (import.meta.env.DEV) {
+      login('dummy-token');
+    }
   };
 
   return (

@@ -57,6 +57,19 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const login = async (credential: string) => {
     setLoading(true);
     logger.info('auth.login.attempt');
+
+    if (import.meta.env.DEV && credential === 'dummy-token') {
+      const dummyUser = { id: 'dummy-id', email: 'dev@example.com', nome: 'Dev User' };
+      localStorage.setItem('token', 'dummy-token');
+      localStorage.setItem('user', JSON.stringify(dummyUser));
+      api.defaults.headers.common['Authorization'] = 'Bearer dummy-token';
+      setToken('dummy-token');
+      setUser(dummyUser);
+      setLoading(false);
+      navigate('/cursos');
+      return;
+    }
+
     try {
       const response = await loginComGoogle(credential);
       const { token: newToken, perfilCompleto, user: loggedInUser } = response.data;
