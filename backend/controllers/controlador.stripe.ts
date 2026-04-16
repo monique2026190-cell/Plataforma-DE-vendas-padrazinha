@@ -2,14 +2,26 @@
 import { Request, Response } from 'express';
 import Stripe from 'stripe';
 
-// Initialize Stripe with the secret key from environment variables
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
-  apiVersion: '2026-03-25.dahlia',
-});
+let stripe: Stripe | null = null;
+
+// Initialize Stripe only if the secret key is available
+if (process.env.STRIPE_SECRET_KEY) {
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: '2026-03-25.dahlia',
+    });
+    console.log('[Stripe Controller] Stripe SDK initialized.');
+} else {
+    console.warn('[Stripe Controller] STRIPE_SECRET_KEY not found. Stripe functionality will be disabled.');
+}
+
 
 // This is a placeholder for your database logic.
 // In a real application, you would fetch the user from your database.
 const findOrCreateUserAndGetStripeAccountId = async (userId: string) => {
+    if (!stripe) {
+        console.error('Stripe is not initialized. Cannot create or find Stripe account.');
+        throw new Error('Stripe is not configured on the server.');
+    }
   // --- DATABASE LOGIC START ---
   // For this example, we'll use a simple in-memory object to simulate a database.
   const usersDatabase: { [key: string]: { stripeAccountId?: string } } = {
@@ -47,6 +59,10 @@ const findOrCreateUserAndGetStripeAccountId = async (userId: string) => {
 };
 
 export const criarSessaoConexao = async (req: Request, res: Response) => {
+    if (!stripe) {
+        console.warn('Stripe is not configured. Cannot create connect session.');
+        return res.status(500).json({ error: 'Stripe is not configured on the server.' });
+    }
   try {
     // In a real app, you'd get the user ID from the authenticated session
     const userId = 'user_123'; 
