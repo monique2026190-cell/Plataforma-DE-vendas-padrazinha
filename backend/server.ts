@@ -10,9 +10,6 @@ import { httpLogger } from './middleware/logger.middleware.js';
 import { logger } from './logs/logger.js';
 import initDB from './db/init.db.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 const app = express();
 
 // --- Middlewares Essenciais ---
@@ -24,9 +21,12 @@ app.use(express.json()); // Parsing de JSON
 app.use('/api', routes);
 
 // --- Servir Arquivos Estáticos do Frontend ---
-// O servidor Express também servirá os arquivos estáticos do build do React.
-const frontendBuildPath = path.join(__dirname, '../../frontend/dist');
+// O servidor Express também servirá os arquivos estáticos do build do Vite.
+// Usamos path.resolve para criar um caminho absoluto a partir da raiz do projeto,
+// o que é mais robusto do que usar __dirname.
+const frontendBuildPath = path.resolve(process.cwd(), 'dist');
 app.use(express.static(frontendBuildPath));
+
 
 // --- Rota Catch-All ---
 // Para qualquer outra requisição, serve o index.html do frontend.
