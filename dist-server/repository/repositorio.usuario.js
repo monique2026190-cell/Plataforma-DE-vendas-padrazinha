@@ -1,5 +1,4 @@
 import pool from '../db/pool.js';
-import { logger } from '../logs/logger.js';
 import { findUserByGoogleIdQuery, createUserQuery, updateUserProfileQuery, findUserByIdQuery } from '../db/queries/usuario.queries.js';
 export const findUserById = async (userId) => {
     const client = await pool.connect();
@@ -11,7 +10,7 @@ export const findUserById = async (userId) => {
         return null;
     }
     catch (error) {
-        logger.error({ error, userId }, 'Error in findUserById');
+        console.error('Error in findUserById', { error, userId });
         throw error;
     }
     finally {
@@ -24,10 +23,10 @@ export const findOrCreateUser = async (googleUser) => {
         const findUserResult = await client.query(findUserByGoogleIdQuery, [googleUser.sub]);
         if (findUserResult.rows.length > 0) {
             const existingUser = findUserResult.rows[0];
-            logger.info({ userId: existingUser.id, email: existingUser.email }, 'User found in database.');
+            console.log('User found in database.', { userId: existingUser.id, email: existingUser.email });
             return existingUser;
         }
-        logger.info({ email: googleUser.email }, 'User not found. Creating new user.');
+        console.log('User not found. Creating new user.', { email: googleUser.email });
         const createUserValues = [
             googleUser.sub,
             googleUser.name,
@@ -36,11 +35,11 @@ export const findOrCreateUser = async (googleUser) => {
         ];
         const createUserResult = await client.query(createUserQuery, createUserValues);
         const newUser = createUserResult.rows[0];
-        logger.info({ userId: newUser.id, email: newUser.email }, 'New user created successfully.');
+        console.log('New user created successfully.', { userId: newUser.id, email: newUser.email });
         return newUser;
     }
     catch (error) {
-        logger.error({ error }, 'Error in findOrCreateUser');
+        console.error('Error in findOrCreateUser', { error });
         throw error;
     }
     finally {
@@ -52,11 +51,11 @@ export const updateUserProfile = async (userId, nome) => {
     try {
         const values = [nome, userId];
         const result = await client.query(updateUserProfileQuery, values);
-        logger.info({ userId, nome }, 'User profile updated successfully.');
+        console.log('User profile updated successfully.', { userId, nome });
         return result.rows[0];
     }
     catch (error) {
-        logger.error({ error, userId, nome }, 'Error updating user profile');
+        console.error('Error updating user profile', { error, userId, nome });
         throw error;
     }
     finally {

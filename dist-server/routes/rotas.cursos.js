@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getCursos, getCursoPorId, criarCurso, apagarCurso } from '../controllers/controlador.cursos.js';
-import { verificarAutenticacao } from '../middleware/middleware.autenticacao.js';
+// import { verificarAutenticacao } from '../middleware/middleware.autenticacao.js';
 const router = Router();
 /**
  * @swagger
@@ -11,7 +11,7 @@ const router = Router();
  *       200:
  *         description: Lista de cursos
  */
-router.get('/cursos', verificarAutenticacao, getCursos);
+router.get('/cursos', getCursos);
 /**
  * @swagger
  * /api/cursos/{id}:
@@ -21,7 +21,7 @@ router.get('/cursos', verificarAutenticacao, getCursos);
  *       200:
  *         description: Dados do curso
  */
-router.get('/cursos/:id', verificarAutenticacao, getCursoPorId);
+router.get('/cursos/:id', getCursoPorId);
 /**
  * @swagger
  * /api/cursos:
@@ -31,7 +31,7 @@ router.get('/cursos/:id', verificarAutenticacao, getCursoPorId);
  *       201:
  *         description: Curso criado com sucesso
  */
-router.post('/cursos', verificarAutenticacao, criarCurso);
+router.post('/cursos', criarCurso);
 /**
  * @swagger
  * /api/cursos/{id}:
@@ -41,5 +41,5 @@ router.post('/cursos', verificarAutenticacao, criarCurso);
  *       204:
  *         description: Curso apagado com sucesso
  */
-router.delete('/cursos/:id', verificarAutenticacao, apagarCurso);
+router.delete('/cursos/:id', apagarCurso);
 export default router;

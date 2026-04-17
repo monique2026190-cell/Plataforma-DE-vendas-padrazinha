@@ -5,7 +5,6 @@ import {
   inserirCursoQuery,
   apagarCursoQuery
 } from '../db/queries/cursos.queries.js';
-import { logger } from '../logs/logger.js';
 
 /**
  * Busca todos os cursos no banco de dados.
@@ -16,7 +15,7 @@ export const buscarTodosCursos = async () => {
     const result = await client.query(buscarCursosQuery);
     return result.rows;
   } catch (error) {
-    logger.error({ error }, 'Erro ao buscar todos os cursos no banco de dados');
+    console.error('Erro ao buscar todos os cursos no banco de dados', error);
     throw error;
   } finally {
     client.release();
@@ -32,7 +31,7 @@ export const buscarCursoPorIdRepo = async (id: number) => {
     const result = await client.query(buscarCursoPorIdQuery, [id]);
     return result.rows[0];
   } catch (error) {
-    logger.error({ error }, 'Erro ao buscar curso por ID no banco de dados');
+    console.error('Erro ao buscar curso por ID no banco de dados', error);
     throw error;
   } finally {
     client.release();
@@ -54,7 +53,7 @@ export const inserirCurso = async (curso: { nome: string; descricao: string; cap
     ]);
     return result.rows[0];
   } catch (error) {
-    logger.error({ error }, 'Erro ao inserir curso no banco de dados');
+    console.error('Erro ao inserir curso no banco de dados', error);
     throw error;
   } finally {
     client.release();
@@ -70,7 +69,7 @@ export const apagarCursoRepo = async (id: number) => {
   try {
     await client.query(apagarCursoQuery, [id]);
   } catch (error) {
-    logger.error({ error }, 'Erro ao apagar curso do banco de dados');
+    console.error('Erro ao apagar curso do banco de dados', error);
     throw error;
   } finally {
     client.release();

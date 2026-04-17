@@ -5,7 +5,6 @@ import {
   inserirCurso,
   apagarCursoRepo,
 } from '../repository/repositorio.cursos.js';
-import { logger } from '../logs/logger.js';
 
 /**
  * Lida com a requisição para buscar todos os cursos.
@@ -15,7 +14,6 @@ export const getCursos = async (req: Request, res: Response) => {
     const cursos = await buscarTodosCursos();
     res.json(cursos);
   } catch (error) {
-    logger.error({ error }, 'Erro ao buscar cursos');
     res.status(500).json({ message: 'Erro interno no servidor' });
   }
 };
@@ -33,7 +31,6 @@ export const getCursoPorId = async (req: Request, res: Response) => {
       res.status(404).json({ message: 'Curso não encontrado' });
     }
   } catch (error) {
-    logger.error({ error }, 'Erro ao buscar curso por ID');
     res.status(500).json({ message: 'Erro interno no servidor' });
   }
 };
@@ -48,7 +45,6 @@ export const criarCurso = async (req: Request, res: Response) => {
     const novoCurso = await inserirCurso({ nome, descricao, capa_curso, preco, usuario_id });
     res.status(201).json(novoCurso);
   } catch (error) {
-    logger.error({ error }, 'Erro ao criar curso');
     res.status(500).json({ message: 'Erro interno no servidor' });
   }
 };
@@ -62,7 +58,6 @@ export const apagarCurso = async (req: Request, res: Response) => {
     await apagarCursoRepo(Number(id));
     res.status(204).send();
   } catch (error) {
-    logger.error({ error }, 'Erro ao apagar curso');
     res.status(500).json({ message: 'Erro interno no servidor' });
   }
 };

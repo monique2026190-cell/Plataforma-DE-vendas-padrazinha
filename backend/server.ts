@@ -2,13 +2,10 @@ import './config.js';
 import express from 'express';
 import path from 'path';
 import routes from './routes/rotas.js';
-import { httpLogger } from './middleware/logger.middleware.js';
-import { logger } from './logs/logger.js';
 import initDB from './db/init.db.js';
 
 const app = express();
 
-app.use(httpLogger);
 app.use(express.json());
 app.use('/api', routes);
 
@@ -24,16 +21,15 @@ const PORT = process.env.PORT || 3000;
 const startServer = async () => {
   try {
     await initDB();
-    logger.info({ context: 'Sistema', category: 'Banco', message: 'db.init.success' });
-    logger.info({ context: 'Sistema', category: 'Banco', message: 'db.connect.success' });
+    console.log('Banco de dados inicializado com sucesso.');
 
     app.listen(PORT, () => {
-      logger.info({ context: 'Sistema', category: 'Servidor', message: 'server.start', porta: PORT });
-      logger.info({ context: 'Sistema', category: 'Frontend', message: 'frontend.available', url: `http://localhost:${PORT}` });
+      console.log(`Servidor iniciado na porta ${PORT}`);
+      console.log(`Frontend disponível em http://localhost:${PORT}`);
     });
 
   } catch (error) {
-    logger.error({ err: error }, 'Falha ao iniciar o servidor:');
+    console.error('Falha ao iniciar o servidor:', error);
     process.exit(1);
   }
 };

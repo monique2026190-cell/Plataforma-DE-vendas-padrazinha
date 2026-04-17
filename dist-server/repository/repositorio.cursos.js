@@ -1,6 +1,5 @@
 import pool from '../db/pool.js';
 import { buscarCursosQuery, buscarCursoPorIdQuery, inserirCursoQuery, apagarCursoQuery } from '../db/queries/cursos.queries.js';
-import { logger } from '../logs/logger.js';
 /**
  * Busca todos os cursos no banco de dados.
  */
@@ -11,7 +10,7 @@ export const buscarTodosCursos = async () => {
         return result.rows;
     }
     catch (error) {
-        logger.error({ error }, 'Erro ao buscar todos os cursos no banco de dados');
+        console.error('Erro ao buscar todos os cursos no banco de dados', error);
         throw error;
     }
     finally {
@@ -28,7 +27,7 @@ export const buscarCursoPorIdRepo = async (id) => {
         return result.rows[0];
     }
     catch (error) {
-        logger.error({ error }, 'Erro ao buscar curso por ID no banco de dados');
+        console.error('Erro ao buscar curso por ID no banco de dados', error);
         throw error;
     }
     finally {
@@ -51,7 +50,7 @@ export const inserirCurso = async (curso) => {
         return result.rows[0];
     }
     catch (error) {
-        logger.error({ error }, 'Erro ao inserir curso no banco de dados');
+        console.error('Erro ao inserir curso no banco de dados', error);
         throw error;
     }
     finally {
@@ -67,7 +66,7 @@ export const apagarCursoRepo = async (id) => {
         await client.query(apagarCursoQuery, [id]);
     }
     catch (error) {
-        logger.error({ error }, 'Erro ao apagar curso do banco de dados');
+        console.error('Erro ao apagar curso do banco de dados', error);
         throw error;
     }
     finally {

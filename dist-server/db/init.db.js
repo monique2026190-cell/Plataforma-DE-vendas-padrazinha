@@ -2,7 +2,6 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import pool from './pool.js';
-import { logger } from '../logs/logger.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const initDB = async () => {
@@ -13,10 +12,8 @@ const initDB = async () => {
         const client = await pool.connect();
         await client.query(sql);
         client.release();
-        logger.info('Banco de dados inicializado com sucesso.');
     }
     catch (error) {
-        logger.error({ err: error }, 'Erro ao inicializar o banco de dados:');
         // Encerra o processo se a inicialização do banco de dados falhar,
         // pois o aplicativo não pode funcionar sem um banco de dados.
         process.exit(1);
