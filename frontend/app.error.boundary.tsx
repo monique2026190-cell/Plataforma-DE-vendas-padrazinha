@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { logger } from './utils/logger';
 
 // O estado agora armazena a instância do erro para exibição em desenvolvimento
 interface State {
@@ -21,13 +20,14 @@ class ErrorBoundary extends React.Component<React.PropsWithChildren<{}>, State> 
 
   // Loga o erro com contexto enriquecido após ele ser capturado
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    logger.error('FRONTEND', 'CRASH', 'Erro inesperado capturado pelo ErrorBoundary', {
-      message: error.message,
-      stack: error.stack,
-      componentStack: info.componentStack,
-      path: window.location.pathname,
-      timestamp: new Date().toISOString(),
-    });
+    // logger.error('FRONTEND', 'CRASH', 'Erro inesperado capturado pelo ErrorBoundary', {
+    //   message: error.message,
+    //   stack: error.stack,
+    //   componentStack: info.componentStack,
+    //   path: window.location.pathname,
+    //   timestamp: new Date().toISOString(),
+    // });
+    console.error('Erro capturado pelo ErrorBoundary:', error, info);
   }
 
   // Ação para recarregar a página, um recurso mais drástico
